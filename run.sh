@@ -1,5 +1,5 @@
 #!/bin/bash
-CONF_DIR="/root/.pyload"
+CONF_DIR="/opt/config"
 TMP_DIR="/tmp/pyload-config"
 
 if [ ! -f "${CONF_DIR}/pyload.conf" ]; then
@@ -7,4 +7,4 @@ if [ ! -f "${CONF_DIR}/pyload.conf" ]; then
 	cp -rp $TMP_DIR/* $CONF_DIR/
 fi
 
-/opt/pyload/pyLoadCore.py
+/opt/pyload/pyLoadCore.py --configdir=/opt/config

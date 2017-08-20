@@ -1,42 +1,31 @@
-FROM debian:stable
+FROM alpine:3.5
 MAINTAINER Konrad Lother <k@hiddenbox.org>
 
-ENV DEBIAN_FRONTEND noninteractive
+RUN apk add --no-cache \
+            bash \
+            python \
+            py2-pip \
+            py2-crypto \
+            py2-curl \
+            bzip2 \
+            tar \
+            unzip \
+            gzip \
+            unrar \
+            wget \
+            git \
+ && pip install --upgrade pip \
+ && mkdir -p /opt/download \
+ && mkdir -p /opt/config \
+ && mkdir -p /opt/ \
+ && ln -s /opt/config /root/.pyload
 
-RUN echo "deb http://httpredir.debian.org/debian/ stable main non-free contrib" >> /etc/apt/sources.list
-RUN apt-get update 
-RUN apt-get -y upgrade && apt-get -y dist-upgrade 
-
-RUN apt-get install -y ca-certificates git
-
-RUN apt-get install -y \
-	python \
-	python-django \
-	python-pyxmpp \
-	python-crypto \
-	python-pycurl \
-	python-imaging \
-	python-beaker \
-	python-qt4 \
-	rhino \
-	tesseract-ocr \
-	tesseract-ocr-eng \
-	gocr \
-	unrar
-RUN apt-get install -y \
-	python-openssl
-RUN apt-get clean
-RUN rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-RUN git clone https://github.com/pyload/pyload /opt/pyload
-
-EXPOSE 8000
-EXPOSE 9666
+RUN git clone https://github.com/pyload/pyload /opt/pyload \
+ && cd /opt/pyload \
+ && git checkout stable 
 
 COPY pyload-config /tmp/pyload-config
 
 ADD run.sh /run.sh
 
-VOLUME /root/.pyload
-VOLUME /opt/pyload/Downloads
-
-CMD /run.sh
+ENTRYPOINT ["/run.sh"]
